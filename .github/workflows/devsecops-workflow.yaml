@@ -1,6 +1,12 @@
 name: Build code, run unit test, run SAST, SCA, DAST security scans for NodeJs App
 on: push
 
+permissions:
+  contents: read     # Allows reading repository contents
+  issues: write      # Required if the scan results need to create GitHub issues
+  security-events: write  # Required for security scan tools like Snyk, SonarCloud
+  actions: read    
+
 jobs:
   build:
     runs-on: ubuntu-latest
