@@ -1,6 +1,3 @@
-/**
- * Created by alicia.sykes on 24/08/2015.
- */
 require('colors');
 
 var fetchWeather = require('./fetch-weather');
@@ -8,10 +5,14 @@ var prepareForWeather = require('./prepared-for-the-weather');
 
 var commandLineArgs = require("command-line-args");
 
-var cli = commandLineArgs([
+// Define CLI options correctly
+var optionDefinitions = [
     { name: "location", alias: "l", type: String, defaultValue: "London" }
-]);
-var location = cli.parse().location;
+];
+
+var cli = commandLineArgs(optionDefinitions);  // Correct way to use command-line-args
+var options = cli;  // No need for .parse()
+var location = options.location;  // Extract location properly
 
 /* Fetch weather data */
 fetchWeather.fetchWeather(location,
@@ -26,7 +27,7 @@ fetchWeather.fetchWeather(location,
         ];
 
         /* Iterate over each item and print to console */
-        for(key in weatherKit){
+        for (let key in weatherKit){
             printLine(weatherKit[key].value, weatherKit[key].name);
         }
     }
