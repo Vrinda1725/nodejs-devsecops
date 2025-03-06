@@ -50,7 +50,3 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
-
-    - name: Upload CodeQL results  # ✅ This step ensures results appear in Security tab
-      uses: github/codeql-action/upload-sarif@v3
-
