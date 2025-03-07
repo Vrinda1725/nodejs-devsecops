@@ -9,7 +9,7 @@
 # the `language` matrix defined below to confirm you have the correct set of
 # supported CodeQL languages.
 #
-name: "CodeQL Advanced"
+name: "CodeQL Analysis"
 
 on:
   push:
@@ -17,36 +17,34 @@ on:
   pull_request:
     branches: [ "master" ]
   schedule:
-    - cron: '33 16 * * 6'
+    - cron: '0 12 * * 1'  # Runs every Monday at 12:00 UTC
 
 jobs:
   analyze:
-    name: Analyze (${{ matrix.language }})
+    name: "CodeQL Analysis"
     runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-      actions: read
-      contents: read
-      pull-requests: read  # Ensure access for PRs
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-        - language: javascript-typescript
-          build-mode: none
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{matrix.language}}"
+      - name: Start Proxy
+        uses: github/codeql-action/start-proxy@v3
+        with:
+          language: javascript-typescript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+           category: "/language:${{matrix.language}}"
+           
+      - name: Run GitHub Script
+        uses: actions/github-script@v7
+        with:
+          script: core.setOutput(process.env.MATRIX_LANGUAGE.replaceAll("-", "_"), "OK");
+
